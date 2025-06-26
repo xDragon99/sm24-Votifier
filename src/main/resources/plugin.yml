@@ -1,0 +1,39 @@
+# Nazwa Twojego pluginu. Musi być unikalna.
+name: Sm24Votifier
+# Wersja pluginu, pobierana automatycznie z build.gradle
+version: ${version}
+# Główna klasa pluginu, która jest uruchamiana przez serwer.
+main: pl.serweryminecraft24.sm24VoterJava.Sm24VoterJava
+# Wersja API, kluczowa dla kompatybilności 1.13+
+api-version: 1.13
+# Twoja nazwa jako autora
+author: Lethal88
+# Krótki opis tego, co robi plugin
+description: Plugin do odbierania nagród za głosowanie na serweryminecraft24.pl
+
+# Definicje wszystkich komend
+commands:
+  sm24-glosuj:
+    description: Wyświetla link do głosowania na serwer.
+    usage: "/<command>"
+    aliases: [glosuj24, vote24]
+  sm24-nagroda:
+    description: Odbiera nagrodę za oddany głos.
+    usage: "/<command>"
+    aliases: [nagroda24, reward24]
+  sm24-test:
+    description: Testuje przyznawanie nagrody (tylko dla OP).
+    usage: "/<command>"
+  sm24-reload:
+    description: Przeładowuje konfigurację pluginu.
+    usage: "/<command>"
+
+# Definicje wszystkich uprawnień
+permissions:
+  sm24.reward.claim:
+    description: Pozwala na użycie komendy /sm24-nagroda, jeśli jest to wymagane w konfiguracji.
+    # 'true' oznacza, że operatorzy serwera (OP) mają to uprawnienie domyślnie.
+    default: op
+  sm24.command.reload:
+    description: Pozwala na użycie komendy /sm24-reload.
+    default: op

@@ -1,0 +1,71 @@
+# =================================================================
+#        Konfiguracja pluginu Sm24VoterJava
+# =================================================================
+# Poradnik konfiguracji: https://serweryminecraft24.pl/konfiguracja-pluginu
+
+# Ustawienia dotyczące komunikacji z API serweryminecraft24.pl
+api:
+  # Twój unikalny token serwera ze strony. Kluczowy do działania pluginu. Możesz go pozyskać po wejściu w panel edycji serwera na stronie serweryminecraft24.pl,
+  #w oknie informacyjnym, które pojawia się po kliknięciu przycisku "Pobierz plugin"
+  server-token: 'tutaj_wpisz_token'
+
+# Ustawienia nagród za głosowanie
+rewards:
+  # Cooldown w sekundach, jak często gracz może użyć komendy /sm24-nagroda. Minimum 60 sekund
+  cooldown-seconds: 60
+
+  permission:
+    # Czy wymagane jest uprawnienie, aby odebrać nagrodę?
+    # true - tak, gracz musi mieć uprawnienie zdefiniowane poniżej
+    # false - każdy może odebrać nagrodę
+    required: false
+    # Uprawnienie, które będzie sprawdzane, jeśli 'required' jest ustawione na 'true'
+    node: 'sm24.reward.claim'
+
+  # Lista komend wykonywanych przez konsolę po pomyślnym odebraniu nagrody.
+  # Użyj {player} jako placeholder na nick gracza.
+  commands:
+    - 'give {player} diamond 1'
+    - 'eco give {player} 100'
+    - 'msg {player} &aDziękujemy za oddanie głosu na nasz serwer!'
+cached-vote-link: ''
+
+
+
+# =================================================================
+#        Konfigurowalne wiadomości wysyłane przez plugin
+# =================================================================
+messages:
+  # Prefix dodawany na początku większości wiadomości.
+  prefix: "&8[&6SM24&8] &r"
+
+  # Wiadomości ogólne
+  no-permission: "{prefix}&cNie posiadasz wymaganych uprawnień."
+  player-only-command: "{prefix}&cTej komendy może użyć tylko gracz."
+  internal-error: "{prefix}&cWystąpił wewnętrzny błąd. Skontaktuj się z administratorem."
+
+  # Wiadomości dla komendy /sm24-nagroda
+  reward:
+    on-cooldown: "{prefix}&cMożesz odebrać nagrodę ponownie za &e{seconds} &csekund."
+    verifying-vote: "{prefix}&aWeryfikujemy Twój głos, proszę czekać..."
+    api-error: "{prefix}&c{message}" # {message} zostanie zastąpione wiadomością z API
+
+  # Wiadomości dla komendy /sm24-glosuj
+  vote:
+    fetching-link: "{prefix}&aPobieranie linku do głosowania..."
+    link-info: "{prefix}&aTwój link do głosowania:" # Link zostanie dołączony w nowej linii
+    link-success: "{prefix}&aZagłosuj na serwer tutaj -> " # Klikalny link zostanie dołączony po tej wiadomości
+
+  # Wiadomości dla komendy /sm24-test
+  test:
+    not-op: "{prefix}&cTa komenda jest dostępna tylko dla operatorów serwera."
+    info: "{prefix}&aUruchomiono testowe przyznawanie nagrody..."
+
+  # Wiadomość o błędnym tokenie
+  invalid-token:
+    line1: "{prefix}&cBrak poprawnego tokena serwera w konfiguracji!"
+    line2: "{prefix}&cSzczegóły konfiguracji znajdziesz pod adresem:"
+    # Link pozostaje w kodzie, ale tekst można edytować
+
+  # Wiadomośc reloadu pluginu
+  reload-success: "{prefix}&aKonfiguracja pluginu została pomyślnie przeładowana!"
