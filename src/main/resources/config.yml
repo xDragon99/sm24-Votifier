@@ -28,7 +28,13 @@ rewards:
     - 'give {player} diamond 1'
     - 'eco give {player} 100'
     - 'msg {player} &aDziękujemy za oddanie głosu na nasz serwer!'
-cached-vote-link: ''
+
+# Pamięć podręczna dla linku do głosowania. Nie zmieniaj tych wartości ręcznie.
+vote-cache:
+  # Link do głosowania, automatycznie uzupełniany przez plugin.
+  link: ''
+  # Token, który został użyty do wygenerowania powyższego linku.
+  token: ''
 
 
 

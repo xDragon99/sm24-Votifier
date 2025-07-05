@@ -13,6 +13,7 @@ import pl.serweryminecraft24.sm24VoterJava.service.VoteApiService;
 
 public final class Sm24VoterJava extends JavaPlugin {
 
+
     private PluginConfig pluginConfig;
     private CooldownService cooldownService;
     private RewardService rewardService;
@@ -20,16 +21,13 @@ public final class Sm24VoterJava extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         Utils.init(this);
+
         reloadPluginConfiguration();
         getLogger().info("[SM24] Plugin został pomyślnie załadowany w nowej architekturze!");
     }
 
-    /**
-     * Przeładowuje całą konfigurację i serwisy pluginu.
-     * Jest wywoływana z onEnable() oraz przez komendę /sm24-reload.
-     */
+
     public void reloadPluginConfiguration() {
 
         this.saveDefaultConfig();
@@ -37,13 +35,25 @@ public final class Sm24VoterJava extends JavaPlugin {
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
+
         this.pluginConfig = new PluginConfig(this);
 
+
+        final String currentToken = this.pluginConfig.getApiToken();
+
+        this.pluginConfig.getCachedVoteToken().ifPresent(cachedToken -> {
+
+            if (!cachedToken.equals(currentToken) && !currentToken.equalsIgnoreCase("tutaj_wpisz_token")) {
+                getLogger().warning("Wykryto zmianę tokena serwera! Pamięć podręczna linku do głosowania została zresetowana.");
+
+                this.cacheVoteLink(null, null);
+                this.pluginConfig = new PluginConfig(this);
+            }
+        });
 
         this.cooldownService = new CooldownService(pluginConfig);
         this.rewardService = new RewardService(this, pluginConfig);
         this.voteApiService = new VoteApiService(pluginConfig);
-
 
         this.registerCommands();
         getLogger().info("[SM24] Konfiguracja została przeładowana.");
@@ -54,36 +64,31 @@ public final class Sm24VoterJava extends JavaPlugin {
         getLogger().info("[SM24] Plugin został zatrzymany.");
     }
 
-    public void cacheVoteLink(String link) {
-        this.getConfig().set("cached-vote-link", link);
+
+    public void cacheVoteLink(String link, String token) {
+        this.getConfig().set("vote-cache.link", link);
+        this.getConfig().set("vote-cache.token", token);
         this.saveConfig();
     }
-
 
     public PluginConfig getPluginConfig() {
         return this.pluginConfig;
     }
 
     private void registerCommands() {
-        // Rejestracja komendy /sm24-nagroda
+
         PluginCommand rewardCmd = getCommand("sm24-nagroda");
         if (rewardCmd != null) {
             rewardCmd.setExecutor(new RewardCommand(this, this.pluginConfig, this.cooldownService, this.rewardService, this.voteApiService));
         }
-
-        // Rejestracja komendy /sm24-glosuj
         PluginCommand voteCmd = getCommand("sm24-glosuj");
         if (voteCmd != null) {
             voteCmd.setExecutor(new VoteCommand(this, this.pluginConfig, this.voteApiService));
         }
-
-        // Rejestracja komendy /sm24-test
         PluginCommand testCmd = getCommand("sm24-test");
         if (testCmd != null) {
             testCmd.setExecutor(new TestCommand(this.pluginConfig, this.rewardService));
         }
-
-        // Rejestracja nowej komendy /sm24-reload
         PluginCommand reloadCmd = getCommand("sm24-reload");
         if (reloadCmd != null) {
             reloadCmd.setExecutor(new ReloadCommand(this));

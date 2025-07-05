@@ -18,7 +18,10 @@ public final class PluginConfig {
     private final String permissionNode;
     private final Duration rewardCooldown;
     private final List<String> rewardCommands;
+
+
     private final String cachedVoteLink;
+    private final String cachedVoteToken;
 
     // --- Pola na Wiadomości ---
     private final String msgPrefix;
@@ -43,7 +46,10 @@ public final class PluginConfig {
         this.isPermissionRequired = plugin.getConfig().getBoolean("rewards.permission.required", false);
         this.permissionNode = plugin.getConfig().getString("rewards.permission.node", "sm24.reward.claim");
         this.rewardCommands = plugin.getConfig().getStringList("rewards.commands");
-        this.cachedVoteLink = plugin.getConfig().getString("cached-vote-link");
+
+
+        this.cachedVoteLink = plugin.getConfig().getString("vote-cache.link");
+        this.cachedVoteToken = plugin.getConfig().getString("vote-cache.token");
 
         // --- Walidacja Cooldownu ---
         long cooldownSeconds = plugin.getConfig().getLong("rewards.cooldown-seconds", 60);
@@ -83,6 +89,13 @@ public final class PluginConfig {
             return Optional.empty();
         }
         return Optional.of(cachedVoteLink);
+    }
+
+    public Optional<String> getCachedVoteToken() {
+        if (cachedVoteToken == null || cachedVoteToken.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(cachedVoteToken);
     }
 
     // --- Gettery dla Wiadomości ---

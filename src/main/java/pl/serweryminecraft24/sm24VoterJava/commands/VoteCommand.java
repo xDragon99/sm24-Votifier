@@ -54,13 +54,13 @@ public final class VoteCommand implements CommandExecutor {
                     voteApiService.fetchVoteLink()
                             .thenAccept(apiResponse -> {
                                 if (apiResponse.isSuccess()) {
-
                                     String successMessage = config.getMsgVoteLinkSuccess().replace("{prefix}", config.getMsgPrefix());
                                     String fetchedLink = apiResponse.getMessage();
-                                    plugin.cacheVoteLink(fetchedLink);
+
+                                    plugin.cacheVoteLink(fetchedLink, config.getApiToken());
+
                                     Utils.notifySenderWithClickableLink(sender, successMessage, fetchedLink);
                                 } else {
-
                                     String errorMessage = config.getMsgRewardApiError()
                                             .replace("{prefix}", config.getMsgPrefix())
                                             .replace("{message}", apiResponse.getMessage());
@@ -69,7 +69,6 @@ public final class VoteCommand implements CommandExecutor {
                             })
                             .exceptionally(error -> {
                                 plugin.getLogger().log(Level.SEVERE, "Błąd w komendzie /sm24-glosuj", error);
-
                                 String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
                                 Utils.notifySenderWithClickableLink(sender, errorMessage, null);
                                 return null;
