@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'pl.serweryminecraft24'
-version = '1.0.0' // Używamy wersji bez SNAPSHOT dla stabilnych wydań
+version = '1.3' // Używamy wersji bez SNAPSHOT dla stabilnych wydań
 
 repositories {
     mavenCentral()

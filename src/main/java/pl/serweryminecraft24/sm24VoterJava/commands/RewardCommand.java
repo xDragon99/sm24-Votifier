@@ -43,7 +43,7 @@ public final class RewardCommand implements CommandExecutor {
         final Player player = (Player) sender;
 
 
-        if (config.getApiToken().equalsIgnoreCase("tutaj_wpisz_token") || config.getApiToken().isBlank()) {
+        if (config.getApiToken().equalsIgnoreCase("tutaj_wpisz_token") || config.getApiToken().trim().isEmpty()) {
             String line1 = config.getMsgInvalidTokenLine1().replace("{prefix}", config.getMsgPrefix());
             String line2 = config.getMsgInvalidTokenLine2().replace("{prefix}", config.getMsgPrefix());
             Utils.notifySenderWithClickableLink(sender, line1, null);

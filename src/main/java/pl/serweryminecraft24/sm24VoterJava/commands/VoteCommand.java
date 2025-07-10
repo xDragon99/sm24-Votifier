@@ -27,7 +27,7 @@ public final class VoteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (config.getApiToken().equalsIgnoreCase("tutaj_wpisz_token") || config.getApiToken().isBlank()) {
+        if (config.getApiToken().equalsIgnoreCase("tutaj_wpisz_token") || config.getApiToken().trim().isEmpty()) {
 
             String line1 = config.getMsgInvalidTokenLine1().replace("{prefix}", config.getMsgPrefix());
             String line2 = config.getMsgInvalidTokenLine2().replace("{prefix}", config.getMsgPrefix());
@@ -38,15 +38,13 @@ public final class VoteCommand implements CommandExecutor {
 
         Optional<String> cachedLinkOpt = config.getCachedVoteLink();
 
-        cachedLinkOpt.ifPresentOrElse(
 
-                cachedLink -> {
+        if (cachedLinkOpt.isPresent()) {
 
-                    String message = config.getMsgVoteLinkInfo().replace("{prefix}", config.getMsgPrefix());
-                    Utils.notifySenderWithClickableLink(sender, message, cachedLink);
-                },
-
-                () -> {
+            String cachedLink = cachedLinkOpt.get();
+            String message = config.getMsgVoteLinkInfo().replace("{prefix}", config.getMsgPrefix());
+            Utils.notifySenderWithClickableLink(sender, message, cachedLink);
+        } else {
 
                     String fetchingMessage = config.getMsgVoteFetchingLink().replace("{prefix}", config.getMsgPrefix());
                     Utils.notifySenderWithClickableLink(sender, fetchingMessage, null);
@@ -74,7 +72,6 @@ public final class VoteCommand implements CommandExecutor {
                                 return null;
                             });
                 }
-        );
 
         return true;
     }

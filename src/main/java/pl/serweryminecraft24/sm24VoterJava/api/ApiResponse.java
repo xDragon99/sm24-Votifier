@@ -2,10 +2,7 @@ package pl.serweryminecraft24.sm24VoterJava.api;
 
 import java.util.Objects;
 
-/**
- * Reprezentuje standardową odpowiedź z API.
- * Jest to klasyczna klasa (POJO), odpowiednik rekordu dla Javy 8.
- */
+
 public final class ApiResponse {
 
     private final boolean success;
