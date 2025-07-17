@@ -71,26 +71,30 @@ public final class RewardCommand implements CommandExecutor {
 
         voteApiService.verifyVote(player)
                 .thenAccept(apiResponse -> {
-                    if (apiResponse == null) {
-                        String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
-                        Utils.notifySenderWithClickableLink(player, errorMessage, null);
-                        return;
-                    }
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        if (apiResponse == null) {
+                            String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
+                            Utils.notifySenderWithClickableLink(player, errorMessage, null);
+                            return;
+                        }
 
-                    if (apiResponse.isSuccess()) {
-                        rewardService.issueReward(player);
-                        cooldownService.setCooldown(player.getUniqueId());
-                    } else {
-                        String errorMessage = config.getMsgRewardApiError()
-                                .replace("{prefix}", config.getMsgPrefix())
-                                .replace("{message}", apiResponse.getMessage());
-                        Utils.notifySenderWithClickableLink(player, errorMessage, null);
-                    }
+                        if (apiResponse.isSuccess()) {
+                            rewardService.issueReward(player);
+                            cooldownService.setCooldown(player.getUniqueId());
+                        } else {
+                            String errorMessage = config.getMsgRewardApiError()
+                                    .replace("{prefix}", config.getMsgPrefix())
+                                    .replace("{message}", apiResponse.getMessage());
+                            Utils.notifySenderWithClickableLink(player, errorMessage, null);
+                        }
+                    });
                 })
                 .exceptionally(error -> {
                     plugin.getLogger().log(Level.SEVERE, "Błąd podczas weryfikacji głosu dla " + player.getName(), error);
-                    String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
-                    Utils.notifySenderWithClickableLink(player, errorMessage, null);
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
+                        Utils.notifySenderWithClickableLink(player, errorMessage, null);
+                    });
                     return null;
                 });
 

@@ -2,33 +2,30 @@
 
 plugins {
     id 'java'
-    // Dodajemy wtyczkę Shadow, aby pakować zależności (jak json-simple) do naszego pliku .jar
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'pl.serweryminecraft24'
-version = '1.3' // Używamy wersji bez SNAPSHOT dla stabilnych wydań
+version = '1.5'
 
 repositories {
     mavenCentral()
-    // Repozytorium Spigota jest potrzebne dla starego API
+
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/groups/public/' }
 }
 
-// ZMIANA: Ustawiamy ścieżkę do Twojego lokalnego folderu plugins
-// Zmień ją na poprawną dla Twojego komputera!
 def localPluginsDir = '/home/user/Documents/Lokalny3/plugins'
 
 dependencies {
-    // ZMIANA KRYTYCZNA: Kompilujemy pod API 1.8.8, aby zapewnić maksymalną kompatybilność wsteczną
+
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
 
-    // Dołączamy bibliotekę json-simple do finalnego pliku
-    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+//    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
-// ZMIANA KRYTYCZNA: Ustawiamy wersję Javy na 8
+
 def targetJavaVersion = 8
 java {
     sourceCompatibility = JavaVersion.toVersion(targetJavaVersion)
@@ -39,31 +36,29 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-// Konfiguracja wtyczki ShadowJar
+
 shadowJar {
     minimize()
 
 }
 
-// Konfiguracja zadania 'build', aby zawsze używało 'shadowJar'
 build {
     dependsOn shadowJar
 }
 
-// Wyłączamy standardowe zadanie 'jar', aby uniknąć pomyłek
 jar {
     enabled = false
 }
 
-// NOWE ZADANIE: Kopiuje gotowy plugin do lokalnego serwera
+
 task deployToLocalServer(type: Copy) {
-    // Upewniamy się, że plugin jest zbudowany, zanim zaczniemy kopiować
+
     dependsOn build
-    // Kopiujemy plik wygenerowany przez shadowJar
+
     from shadowJar.archiveFile
-    // Do folderu zdefiniowanego na górze pliku
+
     into localPluginsDir
-    // Informacja w konsoli po zakończeniu
+
     doLast {
         println "Plugin skopiowano do: ${localPluginsDir}"
     }

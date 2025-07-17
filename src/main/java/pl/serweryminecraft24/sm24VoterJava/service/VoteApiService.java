@@ -28,18 +28,27 @@ public final class VoteApiService {
 
     public CompletableFuture<ApiResponse> fetchVoteLink() {
         return CompletableFuture.supplyAsync(() -> {
-
             String url = "https://serweryminecraft24.pl/api/verify-vote-plugin/link-glosujacy";
-            String jsonBody = "{\"serverToken\": \"" + this.apiToken + "\"}";
+
+            java.util.Map<String, String> data = new java.util.HashMap<>();
+            data.put("serverToken", this.apiToken);
+
+            String jsonBody = gson.toJson(data);
+
             return executePostRequest(url, jsonBody);
         });
     }
 
     public CompletableFuture<ApiResponse> verifyVote(Player player) {
         return CompletableFuture.supplyAsync(() -> {
+            String url = "https://serweryminecraft24.pl/api/verify-vote-plugin"; // Zmieniony URL na poprawny z API
 
-            String url = "https://serweryminecraft24.pl/api/verify-vote-plugin";
-            String jsonBody = "{\"serverToken\": \"" + this.apiToken + "\", \"nickname\": \"" + player.getName() + "\"}";
+            java.util.Map<String, String> data = new java.util.HashMap<>();
+            data.put("serverToken", this.apiToken);
+            data.put("nickname", player.getName());
+
+            String jsonBody = gson.toJson(data);
+
             return executePostRequest(url, jsonBody);
         });
     }

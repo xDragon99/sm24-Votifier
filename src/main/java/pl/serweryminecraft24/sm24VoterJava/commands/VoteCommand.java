@@ -46,32 +46,36 @@ public final class VoteCommand implements CommandExecutor {
             Utils.notifySenderWithClickableLink(sender, message, cachedLink);
         } else {
 
-                    String fetchingMessage = config.getMsgVoteFetchingLink().replace("{prefix}", config.getMsgPrefix());
-                    Utils.notifySenderWithClickableLink(sender, fetchingMessage, null);
+            String fetchingMessage = config.getMsgVoteFetchingLink().replace("{prefix}", config.getMsgPrefix());
+            Utils.notifySenderWithClickableLink(sender, fetchingMessage, null);
 
-                    voteApiService.fetchVoteLink()
-                            .thenAccept(apiResponse -> {
-                                if (apiResponse.isSuccess()) {
-                                    String successMessage = config.getMsgVoteLinkSuccess().replace("{prefix}", config.getMsgPrefix());
-                                    String fetchedLink = apiResponse.getMessage();
+            voteApiService.fetchVoteLink()
+                    .thenAccept(apiResponse -> {
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            if (apiResponse.isSuccess()) {
+                                String successMessage = config.getMsgVoteLinkSuccess().replace("{prefix}", config.getMsgPrefix());
+                                String fetchedLink = apiResponse.getMessage();
 
-                                    plugin.cacheVoteLink(fetchedLink, config.getApiToken());
+                                plugin.cacheVoteLink(fetchedLink, config.getApiToken());
 
-                                    Utils.notifySenderWithClickableLink(sender, successMessage, fetchedLink);
-                                } else {
-                                    String errorMessage = config.getMsgRewardApiError()
-                                            .replace("{prefix}", config.getMsgPrefix())
-                                            .replace("{message}", apiResponse.getMessage());
-                                    Utils.notifySenderWithClickableLink(sender, errorMessage, null);
-                                }
-                            })
-                            .exceptionally(error -> {
-                                plugin.getLogger().log(Level.SEVERE, "Błąd w komendzie /sm24-glosuj", error);
-                                String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
+                                Utils.notifySenderWithClickableLink(sender, successMessage, fetchedLink);
+                            } else {
+                                String errorMessage = config.getMsgRewardApiError()
+                                        .replace("{prefix}", config.getMsgPrefix())
+                                        .replace("{message}", apiResponse.getMessage());
                                 Utils.notifySenderWithClickableLink(sender, errorMessage, null);
-                                return null;
-                            });
-                }
+                            }
+                        });
+                    })
+                    .exceptionally(error -> {
+                        plugin.getLogger().log(Level.SEVERE, "Błąd w komendzie /sm24-glosuj", error);
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            String errorMessage = config.getMsgInternalError().replace("{prefix}", config.getMsgPrefix());
+                            Utils.notifySenderWithClickableLink(sender, errorMessage, null);
+                        });
+                        return null;
+                    });
+        }
 
         return true;
     }
